@@ -1,0 +1,21 @@
+`timescale 1ns / 1ps
+
+module param_right_shifter
+# (parameter N = 3)
+(
+    input logic [2**N - 1:0] in,
+    input logic [N - 1:0] amt,
+    output [2**N - 1:0] out
+);
+
+logic [(2**N) - 1:0] tmp [0:N-2];
+
+assign tmp[0] = amt[0] ? {in[0], in[(2**N)-1:1]} : in;
+
+generate 
+    genvar i;
+    for(i = 1; i < N; i += 1)
+        assign tmp[i] = amt[i] ? {tmp[i-1][2**i-1:0], tmp[i-1] >>2**i} : in;
+    endgenerate 
+    assign out = amt[N-1] ? {tmp[i-1][2**i-1:0], tmp[i-1] >>2**i} : out;
+endmodule
