@@ -1,0 +1,18 @@
+module param_right_shifter
+    #(parameter N = 4)
+    (
+    input logic  [(2**N)-1:0] a,
+    input logic  [N-1:0]    amt,
+    output logic [(2**N)-1:0] c
+    );
+    logic [(2**N)-1:0] tmp [0:N-1];
+    
+    assign tmp[0] = amt[0] ? {a[0], a[(2**N)-1:1]} : a;
+    generate
+        genvar i;
+        for (i = 1; i < N;i=i+1)
+        assign tmp[i] = amt[i] ? {tmp[i-1][2**i-1:0], tmp[i-1][(2**N)-1:2**i]} : tmp[i-1];
+        
+    endgenerate
+        assign c = tmp[N-1];
+endmodule
