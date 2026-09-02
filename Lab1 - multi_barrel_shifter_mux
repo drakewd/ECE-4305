@@ -1,0 +1,22 @@
+module multi_barrel_shifter_mux #(parameter M = 4)
+    (
+    input logic  [(2**M)-1:0] a1,
+    input logic               lr,
+    input logic  [M-1:0]      amt1,
+    output logic [(2**M)-1:0] f
+    );
+    logic [(2**M)-1:0]tmp0,tmp1;
+    param_left_shifter #(.N(M)) left_m
+    (
+    .a(a1),
+    .amt(amt1),
+    .c(tmp0)
+    );
+    param_right_shifter #(.N(M)) right_m
+    (
+    .a(a1),
+    .amt(amt1),
+    .c(tmp1)
+    );
+    assign f = lr ? tmp0 : tmp1;
+endmodule
