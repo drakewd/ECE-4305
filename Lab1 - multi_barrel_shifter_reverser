@@ -1,0 +1,26 @@
+module multi_barrel_shifter_reverser#(parameter R = 3)(
+    input logic  [(2**R)-1:0] x,
+    input logic  [R-1:0]    amts,
+    input logic LR,
+    output logic [(2**R)-1:0] y
+    );
+    logic [(2**R)-1:0] temp,temp1;
+    generate
+        genvar i;
+        for (i = 0; i < 2**R;i=i+1)
+        assign temp[i] = x[2**R-i-1];
+    endgenerate
+    
+    multi_barrel_shifter_mux #(.N(R))l_r
+    (
+    .a1(temp),
+    .lr(LR),
+    .amt1(amts),
+    .f(temp1)
+    );
+    generate
+        genvar j;
+        for (j = 0; j < 2**R;j=i+1)
+        assign y[i] = temp1[2**R-i-1];
+    endgenerate
+endmodule
